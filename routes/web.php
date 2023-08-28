@@ -13,29 +13,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware('auth')->group(function () {
+    Route::namespace('App\Http\Controllers')->group(function() {
+        Route::resource('discussions', DiscussionController::class)
+            ->only(['create', 'store', 'edit', 'update', 'destroy']);
+    });
+});
+
+Route::namespace('App\Http\Controllers')->group(function() {
+    Route::resource('discussions', DiscussionController::class)
+        ->only(['index', 'show']);
+
+});
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::get('login', function () {
-    return view('pages.auth.login');
-})->name('auth.login.show');
-
-Route::get('sign-up', function () {
-    return view('pages.auth.sign-up');
-})->name('auth.sign-up.show');
-
-Route::get('discussions', function () {
-    return view('pages.discussions.index');
-})->name('discussions.index');
+Route::namespace('App\Http\Controllers\Auth')->group(function() {
+    Route::get('login', 'LoginController@show')->name('auth.login.show');
+    Route::post('login', 'LoginController@login')->name('auth.login.login');
+    Route::post('logout', 'LoginController@logout')->name('auth.login.logout');
+    Route::get('sign-up', 'SignUpController@show')->name('auth.sign-up.show');
+    Route::post('sign-up', 'SignUpController@signUp')->name('auth.sign-up.sign-up');
+});
 
 Route::get('discussions/lorem', function () {
     return view('pages.discussions.show');
 })->name('discussions.show');
-
-Route::get('discussions/create', function () {
-    return view('pages.discussions.form');
-})->name('discussions.create');
 
 Route::get('answers/1', function () {
     return view('pages.answers.form');
