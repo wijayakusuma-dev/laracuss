@@ -14,21 +14,37 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth')->group(function () {
+    Route::namespace('App\Http\Controllers\My')->group(function() {
+        Route::resource('users', UserController::class)->only(['edit', 'update']);
+    });
+
     Route::namespace('App\Http\Controllers')->group(function() {
         Route::resource('discussions', DiscussionController::class)
             ->only(['create', 'store', 'edit', 'update', 'destroy']);
+
+        Route::post('discussions/{discussion}/like', 'LikeController@discussionLike')
+            ->name('discussions.like.like');
+        Route::post('discussions/{discussion}/unlike', 'LikeController@discussionUnlike')
+            ->name('discussions.like.unlike');
+
+        Route::post('discussions/{discussion}/answer', 'AnswerController@store')
+            ->name('discussions.answer.store');
+
+        Route::resource('answers', AnswerController::class)->only(['edit', 'update', 'destroy']);
+        Route::post('answers/{answer}/like', 'LikeController@answerLike')->name('answers.like.like');
+        Route::post('answers/{answer}/unlike', 'LikeController@answerUnlike')->name('answers.like.unlike');
     });
 });
 
 Route::namespace('App\Http\Controllers')->group(function() {
+    Route::get('/', 'HomeController@index')->name('home');
+
     Route::resource('discussions', DiscussionController::class)
         ->only(['index', 'show']);
 
+    Route::get('discussions/categories/{category}', 'CategoryController@show')
+        ->name('discussions.categories.show');
 });
-
-Route::get('/', function () {
-    return view('home');
-})->name('home');
 
 Route::namespace('App\Http\Controllers\Auth')->group(function() {
     Route::get('login', 'LoginController@show')->name('auth.login.show');
@@ -38,18 +54,7 @@ Route::namespace('App\Http\Controllers\Auth')->group(function() {
     Route::post('sign-up', 'SignUpController@signUp')->name('auth.sign-up.sign-up');
 });
 
-Route::get('discussions/lorem', function () {
-    return view('pages.discussions.show');
-})->name('discussions.show');
+Route::namespace('App\Http\Controllers\My')->group(function() {
+    Route::resource('users', UserController::class)->only(['show']);
+});
 
-Route::get('answers/1', function () {
-    return view('pages.answers.form');
-})->name('answers.edit');
-
-Route::get('users/wijayak', function () {
-    return view('pages.users.show');
-})->name('users.show');
-
-Route::get('users/wijayak/edit', function () {
-    return view('pages.users.form');
-})->name('users.edit');

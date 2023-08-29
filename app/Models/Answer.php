@@ -7,17 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Discussion extends Model
+class Answer extends Model
 {
     use HasFactory, Likeable, SoftDeletes;
 
     protected $fillable = [
         'user_id',
-        'category_id',
-        'title',
-        'slug',
-        'content_preview',
-        'content',
+        'discussion_id',
+        'answer',
     ];
 
     public function user()
@@ -25,13 +22,8 @@ class Discussion extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function category()
+    public function discussion()
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function answers()
-    {
-        return $this->hasMany(Answer::class);
+        return $this->belongsTo(Discussion::class);
     }
 }

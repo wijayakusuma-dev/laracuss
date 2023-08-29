@@ -28,10 +28,11 @@
                         <div class="row">
                             <div class="col-12 col-lg-2 mb-1 mb-lg-0 d-flex flex-row flex-lg-column align-items-end">
                                 <div class="text-nowrap me-2 me-lg-0">
-                                    3 Likes
+                                    {{ $discussion->likeCount . ' ' . Str::plural('like', $discussion->likeCount) }}
                                 </div>
                                 <div class="text-nowrap color-gray">
-                                    9 Answers
+                                    {{ $discussion->answers->count() . ' '
+                                        . Str::plural('answer', $discussion->answers->count()) }}
                                 </div>
                             </div>
                             <div class="col-12 col-lg-10">
@@ -41,7 +42,7 @@
                                 <p>{!! $discussion->content_preview !!}</p>
                                 <div class="row">
                                     <div class="col me-1 me-lg-2">
-                                        <a href="#">
+                                        <a href="{{ route('discussions.categories.show', $discussion->category->slug) }}">
                                             <span class="badge rounded-pill text-bg-light">{{ $discussion->category->name }}</span>
                                         </a>
                                     </div>
@@ -79,7 +80,7 @@
                     <h3>All Categories</h3>
                     <div>
                         @foreach ($categories as $category)
-                        <a href="#">
+                        <a href="{{ route('discussions.categories.show', $category->slug) }}">
                             <span class="badge rounded-pill text-bg-light">{{ $category->name }}</span>
                         </a>
                         @endforeach
